@@ -1,134 +1,202 @@
 # Financial News Sentiment and Stock Market Correlation Analysis
 
-This project focuses on the detailed analysis of financial news sentiment and its correlation with stock market movements. By leveraging natural language processing (NLP) techniques, sentiment analysis, and advanced financial analytics, this analysis aims to uncover meaningful insights that can enhance financial forecasting accuracy. The ultimate goal is to develop innovative strategies that utilize news sentiment as a predictive tool for stock market trends.
+This project analyzes whether the tone of financial news headlines is related to short-term stock market movement for major technology companies. It combines news sentiment scoring, stock return calculation, date-based data alignment, Pearson correlation analysis, and visualization in both script and notebook workflows.
 
+## Overview
 
-# Financial News Sentiment and Stock Market Correlation Analysis - Task 1
+The current pipeline uses:
 
-This branch focuses on **Task 1: Exploratory Data Analysis (EDA)**, where we perform initial analysis on the financial news dataset to uncover insights and set the foundation for further analysis.
+- Alpha Vantage for company news headlines
+- yfinance for stock price history
+- TextBlob for headline sentiment polarity
+- pandas for cleaning and merging data
+- matplotlib and seaborn for visualization
 
+The analysis covers these companies:
 
-## Table of Contents
+- Apple (`AAPL`)
+- Amazon (`AMZN`)
+- Google (`GOOGL`)
+- Meta (`META`)
+- Microsoft (`MSFT`)
+- Nvidia (`NVDA`)
+- Tesla (`TSLA`)
 
-1. [Project Overview](#project-overview)
-2. [Business Objective](#business-objective)
-3. [Dataset Overview](#dataset-overview)
-  
-4. [Tasks and Deliverables](#tasks-and-deliverables)
-5. [Installation](#installation)
-6. [Usage](#usage)
-7. [Contributing](#contributing)
-8. # [License](#license)
-9. [Task 1 Overview](#task-1-overview)
+## What The Project Does
 
+The workflow is:
 
-## Project Overview
+1. Fetch or load cached news headlines for each company.
+2. Fetch or load cached daily stock prices.
+3. Clean and normalize the datasets.
+4. Align news and stock data by date.
+5. Score each headline with sentiment polarity.
+6. Compute daily stock returns.
+7. Aggregate sentiment by day.
+8. Calculate Pearson correlation between average daily sentiment and daily return.
+9. Plot overall and per-company relationships.
 
-This project focuses on analyzing a large corpus of financial news data to discover correlations between news sentiment and stock market movements. It encompasses data engineering, financial analytics, and machine learning engineering to enhance predictive analytics capabilities at Nova Financial Solutions.
+## Current Data Behavior
 
-## Business Objective
+News data is fetched from Alpha Vantage. Because the free tier has a strict daily quota, the project includes a fallback mode:
 
-Nova Financial Solutions aims to enhance its predictive analytics capabilities to significantly boost its financial forecasting accuracy and operational efficiency through advanced data analysis. This involves:
+- If cached news data exists, it is reused.
+- If the API quota is exceeded and no cache exists, the project generates sample news headlines so the pipeline can still run end-to-end.
 
-- Performing sentiment analysis on financial news headlines.
-- Establishing statistical correlations between sentiment scores and stock price movements.
-- Providing actionable insights and investment strategies based on the analysis.
+Stock data is fetched from yfinance and cached locally.
 
-## Dataset Overview
+## Project Structure
 
-The Financial News and Stock Price Integration Dataset (FNSPID) contains:
+```text
+Financial-News-Sentiment-Stock-Market-Correlation-Analysis-main/
+|-- README.md
+|-- requirements.txt
+|-- .env
+|-- data/
+|   |-- news_cache.csv
+|   `-- stock_cache.csv
+|-- notebooks/
+|   `-- Correlation_analysis.ipynb
+|-- scripts/
+|   `-- task-3main.py
+`-- src/
+    |-- data_fetcher.py
+    |-- data_cleaner.py
+    |-- data_merger.py
+    |-- sentiment_analysis.py
+    |-- stock_returns.py
+    |-- correlation_analysis.py
+    `-- visualizationt.py
+```
 
-- **headline**: Title of the news article.
-- **url**: Direct link to the full news article.
-- **publisher**: Author/creator of the article.
-- **date**: Publication date and time.
-- **stock**: Stock ticker symbol.
+## File Responsibilities
 
-
-
-## Tasks and Deliverables
-
-### Week 1:
-
-- **Task 1: Exploratory Data Analysis (EDA)**
-
-  - Descriptive Statistics
-  - Text Analysis (Sentiment Analysis & Topic Modeling)
-  - Time Series Analysis
-  - Publisher Analysis
-
-- **Task 2: Quantitative Analysis using PyNance and TA-Lib**
-
-  - Load and prepare stock price data
-  - Apply technical analysis indicators
-  - Visualize the data
-
-- **Task 3: Correlation Between News and Stock Movement**
-  - Align datasets by dates
-  - Perform sentiment analysis on news headlines
-  - Calculate daily stock returns and correlation with sentiment scores
-
-### Deliverables:
-
-- **Interim Report**: Summary of initial findings and partial progress (max 3 pages).
-- **Final Report**: Detailed analysis and insights (up to 10 pages).
+- `scripts/task-3main.py`: Main runnable pipeline.
+- `notebooks/Correlation_analysis.ipynb`: Interactive analysis notebook with intermediate outputs and per-company charts.
+- `src/data_fetcher.py`: Downloads news and stock data, handles caching, and generates fallback sample news.
+- `src/data_cleaner.py`: Parses dates, removes invalid rows, and formats date columns.
+- `src/data_merger.py`: Merges stock and news data by date.
+- `src/sentiment_analysis.py`: Converts headlines into TextBlob polarity scores and aggregates sentiment by day.
+- `src/stock_returns.py`: Computes daily percentage returns from closing prices.
+- `src/correlation_analysis.py`: Calculates Pearson correlation.
+- `src/visualizationt.py`: Builds the overall charts.
 
 ## Installation
 
-1. **Clone the Repository**:
+### 1. Clone the repository
 
-   ```bash
-   git clone https://github.com/dagiteferi/Financial-News-Sentiment-Stock-Market-Correlation-Analysis.git
-   cd Financial-News-Sentiment-Stock-Market-Correlation-Analysis
+```bash
+git clone https://github.com/<your-username>/<your-repo>.git
+cd Financial-News-Sentiment-Stock-Market-Correlation-Analysis-main
+```
 
-   ```
+### 2. Create and activate a virtual environment
 
-2. **Install Dependencies**:
+Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-** Contributing**
-Contributions are welcome! Please fork the repository and use a feature branch. Pull requests are warmly welcomed.
+### 4. Create a `.env` file
 
-### How to Contribute
+Add your Alpha Vantage API key:
 
-1. **Fork the repository**: Click the "Fork" button at the top right of this page to create your own copy of the repository.
-2. **Clone your fork**: Clone the forked repository to your local machine.
-   ```bash
-   git clone https://github.com/your-username/your-repository.git
-   ```
-3. **Create a new branch**: Create a new branch for your feature or bugfix.
-   ```bash
-   git checkout -b feature/AmazingFeature
-   ```
-4. **Make your changes**: Implement your feature or fix the bug. Ensure your code adheres to the project's coding standards and style.
-5. **Commit your changes**: Commit your changes with a descriptive message.
-   ```bash
-   git add .
-   git commit -m 'Add some AmazingFeature'
-   ```
-6. **Push your branch**: Push your branch to your forked repository.
-   ```bash
-   git push origin feature/AmazingFeature
-   ```
-7. **Create a Pull Request**: Go to the repository on GitHub, switch to your branch, and click the `New Pull Request` button. Provide a detailed description of your changes and submit the pull request.
+```env
+ALPHA_VANTAGE_API_KEY=your_api_key_here
+```
 
-**License**
-Distributed under the MIT License. See LICENSE for more information.
+## Requirements
 
-=======
+Main packages used by this project:
 
-## Task 1 Overview
+- pandas
+- matplotlib
+- seaborn
+- nltk
+- textblob
+- requests
+- python-dotenv
+- yfinance
 
-### Task 1: Exploratory Data Analysis (EDA)
+## How To Run
 
-- **Descriptive Statistics**: Calculate basic statistics such as headline length, article counts per publisher, and publication dates.
-- **Text Analysis**: Perform sentiment analysis on headlines and identify common keywords or phrases.
-- **Time Series Analysis**: Analyze the frequency of article publication over time and identify trends.
-- **Publisher Analysis**: Identify top publishers and analyze their reporting patterns.
+### Run the script pipeline
 
-### Deliverables for Task 1:
+From the project root:
 
-- **EDA Report**: Summary of initial findings and insights from the exploratory data analysis.
+```powershell
+.\.venv\Scripts\Activate.ps1
+python scripts\task-3main.py
+```
+
+This will:
+
+- fetch or load cached data
+- compute sentiment and returns
+- print the Pearson correlation coefficient
+- show the overall visualizations
+
+### Run the notebook
+
+Open the notebook below in VS Code or Jupyter and run the cells in order:
+
+- `notebooks/Correlation_analysis.ipynb`
+
+The notebook includes:
+
+- setup and cache loading
+- data inspection
+- merged dataset construction
+- sentiment scoring
+- overall correlation
+- per-company correlation plots
+
+## Output
+
+The project produces:
+
+- a merged news and stock analysis dataset
+- overall daily return and sentiment plots
+- an overall sentiment vs return scatter plot
+- per-company scatter plots for all tracked companies
+- Pearson correlation values overall and by company
+
+## Example Analysis Question
+
+Does more positive news sentiment on a given day align with stronger stock returns for the same day?
+
+This repository is built to answer that question programmatically and visually.
+
+## Notes And Limitations
+
+- Free Alpha Vantage access is rate-limited.
+- If fallback sample news is used, the resulting correlation values are only suitable for demo or development purposes.
+- The current sentiment model uses headline text only, not full article content.
+- Pearson correlation captures linear association only and does not imply causation.
+
+## Suggested Report Use
+
+This project is suitable for an academic or portfolio report that includes:
+
+- project background and objective
+- dataset description
+- methodology
+- overall results
+- per-company graph analysis
+- limitations and recommendations
+
+## Contributing
+
+Contributions are welcome through issues or pull requests.
+
+## License
+
+No license file is currently included in the repository. Add one if you intend to share or reuse this project publicly.
